@@ -61,63 +61,227 @@ function CustomerDashboard() {
   };
 
   const getStatusBadge = (status) => {
-    const map = {
-      PENDING: { cls: "bg-warning text-dark", label: "⏳ Pending" },
-      PREPARING: { cls: "bg-info text-dark", label: "🍰 Preparing" },
-      READY_FOR_PICKUP: { cls: "bg-primary", label: "✅ Ready for Pickup" },
-      OUT_FOR_DELIVERY: { cls: "bg-purple text-white", label: "🚚 Out for Delivery" },
-      DELIVERED: { cls: "bg-success", label: "✔ Delivered" },
-      COMPLETED: { cls: "bg-success", label: "✔ Completed" },
-      PICKED_UP: { cls: "bg-success", label: "✔ Picked Up" },
-      CANCELLED: { cls: "bg-danger", label: "✖ Cancelled" },
+    const styleMap = {
+      PENDING:          { background: "#ffc107", color: "#212529", label: "⏳ Pending" },
+      PREPARING:        { background: "#0dcaf0", color: "#212529", label: "🍰 Preparing" },
+      READY_FOR_PICKUP: { background: "#0d6efd", color: "#fff",    label: "✅ Ready for Pickup" },
+      OUT_FOR_DELIVERY: { background: "#6f42c1", color: "#fff",    label: "🚚 Out for Delivery" },
+      DELIVERED:        { background: "#198754", color: "#fff",    label: "✔ Delivered" },
+      COMPLETED:        { background: "#198754", color: "#fff",    label: "✔ Completed" },
+      PICKED_UP:        { background: "#198754", color: "#fff",    label: "✔ Picked Up" },
+      CANCELLED:        { background: "#dc3545", color: "#fff",    label: "✖ Cancelled" },
     };
-    const s = map[status] || { cls: "bg-secondary", label: status };
-    return <span className={`badge rounded-pill ${s.cls}`}>{s.label}</span>;
+    const s = styleMap[status] || { background: "#6c757d", color: "#fff", label: status || "UNKNOWN" };
+    return (
+      <span style={{
+        background: s.background,
+        color: s.color,
+        padding: "4px 12px",
+        borderRadius: "999px",
+        fontSize: "0.78rem",
+        fontWeight: 700,
+        display: "inline-block",
+        whiteSpace: "nowrap",
+      }}>
+        {s.label}
+      </span>
+    );
   };
 
   const renderStatusTracker = (status) => {
     const steps = [
-      { key: "PENDING", icon: faClock, label: "Order Placed" },
-      { key: "PREPARING", icon: faBirthdayCake, label: "Preparing" },
-      { key: "READY_FOR_PICKUP", icon: faStore, label: "Ready for Pickup" },
-      { key: "PICKED_UP", icon: faCheckCircle, label: "Picked Up" },
+      { key: "PENDING",          icon: faClock,        label: "Order Placed",     desc: "We received your order!" },
+      { key: "PREPARING",        icon: faBirthdayCake, label: "Preparing",        desc: "Baking your cake 🎂" },
+      { key: "READY_FOR_PICKUP", icon: faStore,        label: "Ready for Pickup", desc: "Come pick it up!" },
+      { key: "PICKED_UP",        icon: faCheckCircle,  label: "Picked Up",        desc: "Enjoy your cake! 🎉" },
     ];
     const ORDER = ["PENDING", "PREPARING", "READY_FOR_PICKUP", "PICKED_UP", "DELIVERED", "COMPLETED"];
-    const currentIdx = ORDER.indexOf(status);
+
     if (status === "CANCELLED") {
       return (
-        <div className="status-tracker mt-3 d-flex align-items-center gap-2 text-danger">
-          <FontAwesomeIcon icon={faTimesCircle} /> Order Cancelled
+        <div style={{
+          background: "#fff5f5",
+          border: "1.5px solid #fca5a5",
+          borderRadius: 16,
+          padding: "16px 20px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 12,
+        }}>
+          <FontAwesomeIcon icon={faTimesCircle} style={{ color: "#dc3545", fontSize: 22 }} />
+          <div>
+            <div style={{ fontWeight: 700, color: "#dc3545" }}>Order Cancelled</div>
+            <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>This order has been cancelled.</div>
+          </div>
         </div>
       );
     }
+
+    const currentIdx = ORDER.indexOf(status);
+
     return (
-      <div className="status-tracker mt-3">
-        <div className="d-flex align-items-center gap-2 flex-wrap">
+      <div style={{
+        background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+        border: "1.5px solid #e2e8f0",
+        borderRadius: 20,
+        padding: "20px 24px",
+        marginTop: 14,
+      }}>
+        <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#94a3b8", marginBottom: 18, textTransform: "uppercase", letterSpacing: 1 }}>
+          📦 Order Progress
+        </div>
+
+        {/* Stepper Row */}
+        <div style={{ display: "flex", alignItems: "flex-start", position: "relative" }}>
           {steps.map((step, i) => {
-            const done = ORDER.indexOf(step.key) <= currentIdx;
+            const stepIdx = ORDER.indexOf(step.key);
+            const isDone    = stepIdx < currentIdx;
+            const isCurrent = stepIdx === currentIdx;
+            const isPending = stepIdx > currentIdx;
+            const isLast    = i === steps.length - 1;
+
+            /* circle colours */
+            const circleBg    = isDone ? "#e6005c" : isCurrent ? "#e6005c" : "#e2e8f0";
+            const circleColor = isDone || isCurrent ? "#fff" : "#94a3b8";
+            const labelColor  = isDone || isCurrent ? "#0f172a" : "#94a3b8";
+            const descColor   = isDone || isCurrent ? "#64748b" : "#cbd5e1";
+
             return (
               <React.Fragment key={step.key}>
-                <div className={`tracker-step d-flex flex-column align-items-center ${done ? "active" : "inactive"}`}>
-                  <div className={`tracker-icon rounded-circle d-flex align-items-center justify-content-center ${done ? "bg-pink text-white" : "bg-light text-muted"}`}
-                    style={{ width: 36, height: 36, fontSize: 14 }}>
-                    <FontAwesomeIcon icon={step.icon} />
+                {/* Step node */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: "0 0 auto", zIndex: 2, minWidth: 72 }}>
+
+                  {/* Pulse wrapper for active step */}
+                  <div style={{ position: "relative", marginBottom: 10 }}>
+                    {isCurrent && (
+                      <span style={{
+                        position: "absolute",
+                        inset: -6,
+                        borderRadius: "50%",
+                        border: "3px solid #e6005c",
+                        opacity: 0.4,
+                        animation: "trackerPulse 1.4s ease-in-out infinite",
+                      }} />
+                    )}
+                    {isCurrent && (
+                      <span style={{
+                        position: "absolute",
+                        inset: -12,
+                        borderRadius: "50%",
+                        border: "2px solid #e6005c",
+                        opacity: 0.15,
+                        animation: "trackerPulse 1.4s ease-in-out infinite 0.3s",
+                      }} />
+                    )}
+                    <div style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background: circleBg,
+                      color: circleColor,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 18,
+                      fontWeight: 800,
+                      boxShadow: isCurrent
+                        ? "0 0 0 4px rgba(230,0,92,0.18), 0 6px 18px rgba(230,0,92,0.3)"
+                        : isDone
+                        ? "0 4px 12px rgba(230,0,92,0.2)"
+                        : "0 2px 6px rgba(0,0,0,0.06)",
+                      transition: "all 0.4s ease",
+                      position: "relative",
+                      zIndex: 1,
+                    }}>
+                      {isDone
+                        ? <FontAwesomeIcon icon={faCheckCircle} />
+                        : <FontAwesomeIcon icon={step.icon} />
+                      }
+                    </div>
                   </div>
-                  <small className={`mt-1 ${done ? "fw-bold text-pink" : "text-muted"}`} style={{ fontSize: "0.7rem", whiteSpace: "nowrap" }}>
+
+                  {/* Step label */}
+                  <div style={{
+                    fontSize: "0.72rem",
+                    fontWeight: isCurrent || isDone ? 800 : 600,
+                    color: labelColor,
+                    textAlign: "center",
+                    whiteSpace: "nowrap",
+                    transition: "color 0.3s",
+                  }}>
                     {step.label}
-                  </small>
+                  </div>
+
+                  {/* Step desc */}
+                  <div style={{
+                    fontSize: "0.65rem",
+                    color: descColor,
+                    textAlign: "center",
+                    marginTop: 2,
+                    whiteSpace: "nowrap",
+                  }}>
+                    {isCurrent ? <span style={{ color: "#e6005c", fontWeight: 700 }}>← Now</span> : step.desc}
+                  </div>
                 </div>
-                {i < steps.length - 1 && (
-                  <div className={`tracker-line flex-grow-1 ${done ? "bg-pink" : "bg-light"}`}
-                    style={{ height: 3, minWidth: 20, borderRadius: 2 }} />
+
+                {/* Connector line */}
+                {!isLast && (
+                  <div style={{
+                    flex: 1,
+                    height: 4,
+                    background: isDone ? "#e6005c" : "#e2e8f0",
+                    borderRadius: 4,
+                    marginTop: 22,
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "background 0.5s",
+                  }}>
+                    {/* Animated shimmer on completed lines */}
+                    {isDone && (
+                      <div style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)",
+                        animation: "trackerShimmer 1.8s linear infinite",
+                      }} />
+                    )}
+                    {/* Animated fill on the CURRENT connecting line (between done and current) */}
+                    {isCurrent === false && isPending === false && (
+                      <div style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "#e6005c",
+                        animation: "trackerFill 0.8s ease forwards",
+                      }} />
+                    )}
+                  </div>
                 )}
               </React.Fragment>
             );
           })}
         </div>
+
+        {/* CSS Keyframes injected inline */}
+        <style>{`
+          @keyframes trackerPulse {
+            0%   { transform: scale(1);   opacity: 0.5; }
+            50%  { transform: scale(1.35); opacity: 0.15; }
+            100% { transform: scale(1);   opacity: 0.5; }
+          }
+          @keyframes trackerShimmer {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+          }
+          @keyframes trackerFill {
+            from { transform: scaleX(0); transform-origin: left; }
+            to   { transform: scaleX(1); transform-origin: left; }
+          }
+        `}</style>
       </div>
     );
   };
+
 
   return (
     <div className="dashboard-page">

@@ -330,15 +330,32 @@ function AdminDashboard() {
                         </td>
                         <td className="fw-bold text-pink">₹{order.totalAmount}</td>
                         <td>
-                          <span className={`badge rounded-pill ${
-                            order.status === "PENDING" ? "bg-warning text-dark" :
-                            order.status === "PREPARING" ? "bg-info text-dark" :
-                            order.status === "READY_FOR_PICKUP" ? "bg-primary" :
-                            order.status === "DELIVERED" || order.status === "COMPLETED" || order.status === "PICKED_UP" ? "bg-success" :
-                            order.status === "CANCELLED" ? "bg-danger" : "bg-secondary"
-                          }`}>
-                            {order.status?.replace(/_/g, " ")}
-                          </span>
+                          {(() => {
+                            const s = order.status || "UNKNOWN";
+                            const styleMap = {
+                              PENDING: { background: "#ffc107", color: "#212529" },
+                              PREPARING: { background: "#0dcaf0", color: "#212529" },
+                              READY_FOR_PICKUP: { background: "#0d6efd", color: "#fff" },
+                              DELIVERED: { background: "#198754", color: "#fff" },
+                              COMPLETED: { background: "#198754", color: "#fff" },
+                              PICKED_UP: { background: "#198754", color: "#fff" },
+                              CANCELLED: { background: "#dc3545", color: "#fff" },
+                            };
+                            const st = styleMap[s] || { background: "#6c757d", color: "#fff" };
+                            return (
+                              <span style={{
+                                ...st,
+                                padding: "4px 10px",
+                                borderRadius: "999px",
+                                fontSize: "0.78rem",
+                                fontWeight: 700,
+                                display: "inline-block",
+                                whiteSpace: "nowrap",
+                              }}>
+                                {s.replace(/_/g, " ")}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td>
                           <select
@@ -432,14 +449,28 @@ function AdminDashboard() {
                       <td className="fw-bold">{u.name}</td>
                       <td>{u.email}</td>
                       <td>
-                        <span className={`badge rounded-pill ${u.role === "ADMIN" ? "bg-danger" : "bg-primary"}`}>
-                          {u.role}
-                        </span>
+                        {(() => {
+                          const role = u.role || u.roles || "CUSTOMER";
+                          const isAdmin = String(role).toUpperCase().includes("ADMIN");
+                          return (
+                            <span style={{
+                              background: isAdmin ? "#dc3545" : "#0d6efd",
+                              color: "#fff",
+                              padding: "4px 12px",
+                              borderRadius: "999px",
+                              fontSize: "0.78rem",
+                              fontWeight: 700,
+                              display: "inline-block",
+                            }}>
+                              {isAdmin ? "ADMIN" : "CUSTOMER"}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td>
                         <button
                           className="btn btn-sm btn-outline-secondary"
-                          onClick={() => handleUserRoleChange(u.id, u.role)}
+                          onClick={() => handleUserRoleChange(u.id, u.role || "CUSTOMER")}
                         >
                           Change User Access Role
                         </button>
