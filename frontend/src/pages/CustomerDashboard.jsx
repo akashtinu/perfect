@@ -14,6 +14,7 @@ import {
   faBoxOpen,
   faArrowRight,
   faBan,
+  faBirthdayCake,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Dashboard.css";
 
@@ -60,42 +61,59 @@ function CustomerDashboard() {
   };
 
   const getStatusBadge = (status) => {
-    switch (status) {
-      case "PENDING":
-        return <span className="badge bg-warning text-dark"><FontAwesomeIcon icon={faClock} className="me-1" /> Order Received</span>;
-      case "PREPARING":
-        return <span className="badge bg-info text-dark"><FontAwesomeIcon icon={faBoxOpen} className="me-1" /> Baking & Preparing</span>;
-      case "READY_FOR_PICKUP":
-      case "OUT_FOR_DELIVERY":
-        return <span className="badge bg-primary"><FontAwesomeIcon icon={faStore} className="me-1" /> Ready for Pickup</span>;
-      case "DELIVERED":
-      case "COMPLETED":
-      case "PICKED_UP":
-        return <span className="badge bg-success"><FontAwesomeIcon icon={faCheckCircle} className="me-1" /> Picked Up</span>;
-      case "CANCELLED":
-        return <span className="badge bg-danger"><FontAwesomeIcon icon={faTimesCircle} className="me-1" /> Cancelled</span>;
-      default:
-        return <span className="badge bg-secondary">{status}</span>;
-    }
+    const map = {
+      PENDING: { cls: "bg-warning text-dark", label: "⏳ Pending" },
+      PREPARING: { cls: "bg-info text-dark", label: "🍰 Preparing" },
+      READY_FOR_PICKUP: { cls: "bg-primary", label: "✅ Ready for Pickup" },
+      OUT_FOR_DELIVERY: { cls: "bg-purple text-white", label: "🚚 Out for Delivery" },
+      DELIVERED: { cls: "bg-success", label: "✔ Delivered" },
+      COMPLETED: { cls: "bg-success", label: "✔ Completed" },
+      PICKED_UP: { cls: "bg-success", label: "✔ Picked Up" },
+      CANCELLED: { cls: "bg-danger", label: "✖ Cancelled" },
+    };
+    const s = map[status] || { cls: "bg-secondary", label: status };
+    return <span className={`badge rounded-pill ${s.cls}`}>{s.label}</span>;
   };
 
   const renderStatusTracker = (status) => {
-    const steps = ["PENDING", "PREPARING", "READY_FOR_PICKUP", "COMPLETED"];
-    if (status === "CANCELLED") return null;
-
-    let currentIndex = steps.indexOf(status);
-    if (status === "OUT_FOR_DELIVERY") currentIndex = 2;
-    if (status === "DELIVERED" || status === "PICKED_UP") currentIndex = 3;
-
+    const steps = [
+      { key: "PENDING", icon: faClock, label: "Order Placed" },
+      { key: "PREPARING", icon: faBirthdayCake, label: "Preparing" },
+      { key: "READY_FOR_PICKUP", icon: faStore, label: "Ready for Pickup" },
+      { key: "PICKED_UP", icon: faCheckCircle, label: "Picked Up" },
+    ];
+    const ORDER = ["PENDING", "PREPARING", "READY_FOR_PICKUP", "PICKED_UP", "DELIVERED", "COMPLETED"];
+    const currentIdx = ORDER.indexOf(status);
+    if (status === "CANCELLED") {
+      return (
+        <div className="status-tracker mt-3 d-flex align-items-center gap-2 text-danger">
+          <FontAwesomeIcon icon={faTimesCircle} /> Order Cancelled
+        </div>
+      );
+    }
     return (
       <div className="status-tracker mt-3">
-        <div className="tracker-steps">
-          {steps.map((step, idx) => (
-            <div key={step} className={`tracker-step ${idx <= currentIndex ? "completed" : ""}`}>
-              <div className="step-circle">{idx + 1}</div>
-              <div className="step-label">{step.replace(/_/g, " ")}</div>
-            </div>
-          ))}
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          {steps.map((step, i) => {
+            const done = ORDER.indexOf(step.key) <= currentIdx;
+            return (
+              <React.Fragment key={step.key}>
+                <div className={`tracker-step d-flex flex-column align-items-center ${done ? "active" : "inactive"}`}>
+                  <div className={`tracker-icon rounded-circle d-flex align-items-center justify-content-center ${done ? "bg-pink text-white" : "bg-light text-muted"}`}
+                    style={{ width: 36, height: 36, fontSize: 14 }}>
+                    <FontAwesomeIcon icon={step.icon} />
+                  </div>
+                  <small className={`mt-1 ${done ? "fw-bold text-pink" : "text-muted"}`} style={{ fontSize: "0.7rem", whiteSpace: "nowrap" }}>
+                    {step.label}
+                  </small>
+                </div>
+                {i < steps.length - 1 && (
+                  <div className={`tracker-line flex-grow-1 ${done ? "bg-pink" : "bg-light"}`}
+                    style={{ height: 3, minWidth: 20, borderRadius: 2 }} />
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
     );
@@ -178,7 +196,6 @@ function CustomerDashboard() {
 
                       <div className="order-card-body">
                         {renderStatusTracker(order.status)}
-
                         <div className="items-list mt-3">
                           <h6>Items Ordered:</h6>
                           <div className="row g-2">

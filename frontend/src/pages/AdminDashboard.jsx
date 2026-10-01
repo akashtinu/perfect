@@ -273,22 +273,22 @@ function AdminDashboard() {
           </div>
         ) : activeTab === "orders" ? (
           <div className="orders-admin-section">
-            {/* Filter Bar */}
             <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
               <h5 className="mb-0">Customer Orders</h5>
               <div className="d-flex align-items-center gap-2">
                 <FontAwesomeIcon icon={faFilter} className="text-muted" />
                 <select
-                  className="form-select form-select-sm w-auto"
+                  className="form-select form-select-sm"
+                  style={{ width: "auto" }}
                   value={orderFilter}
                   onChange={(e) => setOrderFilter(e.target.value)}
                 >
-                  <option value="ALL">All Statuses</option>
-                  <option value="PENDING">PENDING</option>
-                  <option value="PREPARING">PREPARING</option>
-                  <option value="READY_FOR_PICKUP">READY FOR PICKUP</option>
-                  <option value="DELIVERED">COMPLETED / PICKED UP</option>
-                  <option value="CANCELLED">CANCELLED</option>
+                  <option value="ALL">All Orders</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="PREPARING">Preparing</option>
+                  <option value="READY_FOR_PICKUP">Ready for Pickup</option>
+                  <option value="DELIVERED">Delivered / Completed</option>
+                  <option value="CANCELLED">Cancelled</option>
                 </select>
               </div>
             </div>
@@ -310,7 +310,7 @@ function AdminDashboard() {
                   {filteredOrders.length === 0 ? (
                     <tr>
                       <td colSpan="7" className="text-center py-4 text-muted">
-                        No orders match the selected filter.
+                        No orders found for the selected filter.
                       </td>
                     </tr>
                   ) : (
@@ -330,18 +330,20 @@ function AdminDashboard() {
                         </td>
                         <td className="fw-bold text-pink">₹{order.totalAmount}</td>
                         <td>
-                          <span className={`badge bg-${
-                            order.status === "DELIVERED" || order.status === "COMPLETED" ? "success" :
-                            order.status === "CANCELLED" ? "danger" :
-                            order.status === "PENDING" ? "warning text-dark" :
-                            order.status === "READY_FOR_PICKUP" ? "primary" : "info text-dark"
+                          <span className={`badge rounded-pill ${
+                            order.status === "PENDING" ? "bg-warning text-dark" :
+                            order.status === "PREPARING" ? "bg-info text-dark" :
+                            order.status === "READY_FOR_PICKUP" ? "bg-primary" :
+                            order.status === "DELIVERED" || order.status === "COMPLETED" || order.status === "PICKED_UP" ? "bg-success" :
+                            order.status === "CANCELLED" ? "bg-danger" : "bg-secondary"
                           }`}>
-                            {order.status}
+                            {order.status?.replace(/_/g, " ")}
                           </span>
                         </td>
                         <td>
                           <select
                             className="form-select form-select-sm"
+                            style={{ minWidth: "160px" }}
                             value={order.status}
                             onChange={(e) => handleStatusChange(order.id, e.target.value)}
                           >
@@ -430,7 +432,7 @@ function AdminDashboard() {
                       <td className="fw-bold">{u.name}</td>
                       <td>{u.email}</td>
                       <td>
-                        <span className={`badge ${u.role === "ADMIN" ? "bg-danger" : "bg-primary"}`}>
+                        <span className={`badge rounded-pill ${u.role === "ADMIN" ? "bg-danger" : "bg-primary"}`}>
                           {u.role}
                         </span>
                       </td>
@@ -439,7 +441,7 @@ function AdminDashboard() {
                           className="btn btn-sm btn-outline-secondary"
                           onClick={() => handleUserRoleChange(u.id, u.role)}
                         >
-                          Toggle to {u.role === "ADMIN" ? "CUSTOMER" : "ADMIN"}
+                          Change User Access Role
                         </button>
                       </td>
                     </tr>
