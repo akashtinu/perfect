@@ -14,6 +14,7 @@ import {
   faFilter,
   faDatabase,
 } from "@fortawesome/free-solid-svg-icons";
+import { getProductImage } from "../utils/imageMapper";
 import "./Dashboard.css";
 
 function AdminDashboard() {
@@ -359,7 +360,7 @@ function AdminDashboard() {
                 <div className="col-md-4 col-sm-6" key={prod.id}>
                   <div className="product-admin-card h-100">
                     <img
-                      src={prod.imageUrl || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500"}
+                      src={getProductImage(prod)}
                       alt={prod.name}
                       className="product-admin-img"
                     />
