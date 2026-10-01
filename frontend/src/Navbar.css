@@ -191,3 +191,37 @@
   color: #c73076;
 }
 
+.btn-admin-nav {
+  background: #ffffff !important;
+  color: #1e1e2f !important;
+  border: none !important;
+  border-radius: 20px !important;
+  font-weight: 800 !important;
+  padding: 6px 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-admin-nav:hover {
+  background: #1e1e2f !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.btn-customer-nav {
+  background: #ffffff !important;
+  color: #c73076 !important;
+  border: none !important;
+  border-radius: 20px !important;
+  font-weight: 800 !important;
+  padding: 6px 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-customer-nav:hover {
+  background: #ffe3ec !important;
+  color: #e6005c !important;
+  transform: translateY(-1px);
+}
+

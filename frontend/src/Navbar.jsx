@@ -74,13 +74,13 @@ function Navbar() {
                 <>
                   {isAdmin ? (
                     <li className="nav-item">
-                      <Link to="/admin/dashboard" className="btn btn-outline-danger btn-sm me-2 my-1" onClick={() => setOpen(false)}>
-                        <FontAwesomeIcon icon={faShieldHalved} className="me-1" /> Admin Dashboard
+                      <Link to="/admin/dashboard" className="btn btn-admin-nav btn-sm me-2 my-1" onClick={() => setOpen(false)}>
+                        <FontAwesomeIcon icon={faShieldHalved} className="me-1 text-danger" /> Admin Dashboard
                       </Link>
                     </li>
                   ) : (
                     <li className="nav-item">
-                      <Link to="/customer/dashboard" className="btn btn-outline-pink btn-sm me-2 my-1" onClick={() => setOpen(false)}>
+                      <Link to="/customer/dashboard" className="btn btn-customer-nav btn-sm me-2 my-1" onClick={() => setOpen(false)}>
                         <FontAwesomeIcon icon={faUser} className="me-1" /> My Orders
                       </Link>
                     </li>
