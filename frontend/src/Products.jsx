@@ -112,7 +112,7 @@ function Products() {
         {visible.length > 0 ? visible.map((item) => {
           const cakeImage = getProductImage(item);
           return (
-            <div className="cake-card" key={item.id}>
+            <div className="cake-card active" key={item.id}>
               {item.tag && (
                 <span
                   className="badge"
