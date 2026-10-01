@@ -1,0 +1,21 @@
+.cart-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-top: 100px;
+}
+
+.cart-item-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+}
+
+.qty-controls button {
+  padding: 2px 8px;
+  border: none;
+  background: transparent;
+}
+
+.qty-controls button:hover {
+  background: #f1f3f5;
+}

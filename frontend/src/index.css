@@ -1,0 +1,27 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  color: #222;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  letter-spacing: 1px;
+}

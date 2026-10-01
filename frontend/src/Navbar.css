@@ -1,0 +1,193 @@
+/* ── NAVBAR ── */
+.pink-navbar {
+  background: rgba(199, 48, 118, 0.95);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+}
+
+.pink-navbar.scrolled {
+  background: rgba(199, 48, 118, 0.9);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.navbar {
+  height: 70px;
+}
+
+/* Logo */
+.navbar-logo {
+  height: 52px;
+  transition: transform 0.4s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.08) rotate(-1deg);
+}
+
+/* Links */
+.nav-link {
+  color: #fff !important;
+  font-weight: 500;
+  position: relative;
+  padding: 8px 14px;
+  transition: opacity 0.2s ease, font-weight 0.2s ease;
+}
+
+/* Underline animation - Only on hover */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 70%;
+}
+
+.nav-link.active-link {
+  opacity: 1;
+  font-weight: 700;
+}
+
+/* ── MOBILE MENU ── */
+.navbar-collapse {
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 991px) {
+  .navbar-collapse {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 70px);
+    height: calc(100dvh - 70px);
+    background: rgba(199, 48, 118, 0.98);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .navbar-collapse.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .navbar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 0 !important;
+  }
+
+  .nav-link {
+    padding: 12px 24px;
+    font-size: 22px;
+    font-weight: 600;
+  }
+}
+
+/* ── FLOATING INSTAGRAM ── */
+.floating-instagram {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 9999;
+}
+
+.floating-instagram-icon {
+  font-size: 34px;
+  color: #fff;
+  padding: 12px;
+  border-radius: 14px;
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease;
+}
+
+.floating-instagram-icon:hover {
+  transform: scale(1.2) rotate(8deg);
+}
+
+/* ── MOBILE SMALL SCREEN ADJUSTMENTS ── */
+@media (max-width: 576px) {
+  .navbar {
+    height: 60px;
+  }
+
+  .navbar-logo {
+    height: 44px;
+  }
+
+  .navbar-collapse {
+    top: 60px;
+    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
+  }
+}
+
+/* ── CART & AUTH BUTTONS ── */
+.btn-cart-nav {
+  background: rgba(255, 255, 255, 0.2);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  font-weight: 600;
+  padding: 5px 15px;
+  transition: all 0.3s ease;
+}
+
+.btn-cart-nav:hover {
+  background: rgba(255, 255, 255, 0.35);
+  color: white !important;
+}
+
+.cart-badge {
+  background: #fff;
+  color: #c73076;
+  font-weight: 800;
+  border-radius: 50px;
+  padding: 2px 7px;
+  font-size: 0.75rem;
+}
+
+.cart-badge-dot {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #fff;
+  color: #c73076;
+  font-size: 0.7rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline-pink {
+  border: 1.5px solid #fff;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 20px;
+}
+
+.btn-outline-pink:hover {
+  background: #fff;
+  color: #c73076;
+}
+

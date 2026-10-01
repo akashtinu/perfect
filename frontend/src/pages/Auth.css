@@ -1,0 +1,126 @@
+.auth-page {
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  background: linear-gradient(135deg, #fff5f8 0%, #fed7e2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-container {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(230, 0, 92, 0.12);
+  padding: 35px 30px;
+  max-width: 480px;
+  width: 100%;
+}
+
+.auth-badge {
+  display: inline-block;
+  background: #ffe3ec;
+  color: #d63384;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.auth-header h2 {
+  color: #2b2b2b;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.auth-header p {
+  color: #6c757d;
+  font-size: 0.92rem;
+  margin-bottom: 24px;
+}
+
+.role-toggle-group {
+  display: flex;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+  border: 1px solid #e9ecef;
+}
+
+.role-toggle-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+.role-toggle-btn.active {
+  background: #d63384;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(214, 51, 132, 0.3);
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+}
+
+.input-with-icon .form-control {
+  padding-left: 42px;
+  border-radius: 10px;
+  border: 1.5px solid #dee2e6;
+  height: 46px;
+  font-size: 0.95rem;
+}
+
+.input-with-icon .form-control:focus {
+  border-color: #d63384;
+  box-shadow: 0 0 0 0.25rem rgba(214, 51, 132, 0.15);
+}
+
+.btn-pink-primary {
+  background: linear-gradient(135deg, #e6005c 0%, #c2004d 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-pink-primary:hover {
+  background: linear-gradient(135deg, #c2004d 0%, #99003d 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(194, 0, 77, 0.3);
+}
+
+.pink-link {
+  color: #d63384;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.pink-link:hover {
+  text-decoration: underline;
+}
+
+.demo-hint {
+  background: #fff8fa;
+  border: 1px dashed #f8d7da;
+}
