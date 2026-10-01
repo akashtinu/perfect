@@ -13,7 +13,7 @@ function Home() {
 
           {/* Badge pill */}
           <div className="hero-badge">
-            ✨ Handcrafted in Kanyakumari
+            ✨ Handcrafted in Kanyakumari.
           </div>
 
           {/* Brand name */}
