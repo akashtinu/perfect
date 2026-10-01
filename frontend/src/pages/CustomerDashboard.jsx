@@ -9,6 +9,7 @@ import {
   faClock,
   faCheckCircle,
   faTruck,
+  faStore,
   faTimesCircle,
   faBoxOpen,
   faArrowRight,
@@ -64,10 +65,13 @@ function CustomerDashboard() {
         return <span className="badge bg-warning text-dark"><FontAwesomeIcon icon={faClock} className="me-1" /> Order Received</span>;
       case "PREPARING":
         return <span className="badge bg-info text-dark"><FontAwesomeIcon icon={faBoxOpen} className="me-1" /> Baking & Preparing</span>;
+      case "READY_FOR_PICKUP":
       case "OUT_FOR_DELIVERY":
-        return <span className="badge bg-primary"><FontAwesomeIcon icon={faTruck} className="me-1" /> Out for Delivery</span>;
+        return <span className="badge bg-primary"><FontAwesomeIcon icon={faStore} className="me-1" /> Ready for Pickup</span>;
       case "DELIVERED":
-        return <span className="badge bg-success"><FontAwesomeIcon icon={faCheckCircle} className="me-1" /> Delivered</span>;
+      case "COMPLETED":
+      case "PICKED_UP":
+        return <span className="badge bg-success"><FontAwesomeIcon icon={faCheckCircle} className="me-1" /> Picked Up</span>;
       case "CANCELLED":
         return <span className="badge bg-danger"><FontAwesomeIcon icon={faTimesCircle} className="me-1" /> Cancelled</span>;
       default:
@@ -76,10 +80,12 @@ function CustomerDashboard() {
   };
 
   const renderStatusTracker = (status) => {
-    const steps = ["PENDING", "PREPARING", "OUT_FOR_DELIVERY", "DELIVERED"];
+    const steps = ["PENDING", "PREPARING", "READY_FOR_PICKUP", "COMPLETED"];
     if (status === "CANCELLED") return null;
 
-    const currentIndex = steps.indexOf(status);
+    let currentIndex = steps.indexOf(status);
+    if (status === "OUT_FOR_DELIVERY") currentIndex = 2;
+    if (status === "DELIVERED" || status === "PICKED_UP") currentIndex = 3;
 
     return (
       <div className="status-tracker mt-3">
@@ -192,8 +198,8 @@ function CustomerDashboard() {
 
                         <div className="order-details-grid mt-3 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center">
                           <div>
-                            <small className="text-muted d-block">Delivery Address:</small>
-                            <span>{order.deliveryAddress}</span>
+                            <small className="text-muted d-block">Fulfillment / Location:</small>
+                            <span>{order.deliveryAddress || "Store Pickup"}</span>
                           </div>
                           <div className="text-end">
                             <small className="text-muted d-block">Total Amount:</small>
@@ -201,7 +207,7 @@ function CustomerDashboard() {
                           </div>
                         </div>
 
-                        {order.status === "PENDING" && (
+                        {order.status === "PENDING" ? (
                           <div className="mt-3 text-end">
                             <button
                               className="btn btn-outline-danger btn-sm"
@@ -209,6 +215,12 @@ function CustomerDashboard() {
                             >
                               <FontAwesomeIcon icon={faBan} className="me-1" /> Cancel Order
                             </button>
+                          </div>
+                        ) : (
+                          <div className="mt-3 text-end">
+                            <small className="text-muted fst-italic">
+                              🔒 Order is in <strong>{order.status.replace(/_/g, " ")}</strong> state and cannot be cancelled.
+                            </small>
                           </div>
                         )}
                       </div>

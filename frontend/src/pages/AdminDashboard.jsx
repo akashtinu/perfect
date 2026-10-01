@@ -78,6 +78,21 @@ function AdminDashboard() {
   };
 
   // Product Modal Handlers
+  const handleLocalImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size is too large! Please choose an image under 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProductForm((prev) => ({ ...prev, imageUrl: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleOpenProductModal = (product = null) => {
     if (product) {
       setEditingProduct(product);
@@ -271,8 +286,8 @@ function AdminDashboard() {
                   <option value="ALL">All Statuses</option>
                   <option value="PENDING">PENDING</option>
                   <option value="PREPARING">PREPARING</option>
-                  <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY</option>
-                  <option value="DELIVERED">DELIVERED</option>
+                  <option value="READY_FOR_PICKUP">READY FOR PICKUP</option>
+                  <option value="DELIVERED">COMPLETED / PICKED UP</option>
                   <option value="CANCELLED">CANCELLED</option>
                 </select>
               </div>
@@ -284,7 +299,7 @@ function AdminDashboard() {
                   <tr>
                     <th>Order #</th>
                     <th>Customer</th>
-                    <th>Contact</th>
+                    <th>Contact / Location</th>
                     <th>Items</th>
                     <th>Total</th>
                     <th>Status</th>
@@ -308,7 +323,7 @@ function AdminDashboard() {
                         </td>
                         <td>
                           <div>{order.customerPhone || "N/A"}</div>
-                          <small className="text-muted">{order.deliveryAddress}</small>
+                          <small className="text-muted">{order.deliveryAddress || "Store Pickup"}</small>
                         </td>
                         <td>
                           {order.items?.map((i) => `${i.product?.name} (x${i.quantity})`).join(", ")}
@@ -316,9 +331,10 @@ function AdminDashboard() {
                         <td className="fw-bold text-pink">₹{order.totalAmount}</td>
                         <td>
                           <span className={`badge bg-${
-                            order.status === "DELIVERED" ? "success" :
+                            order.status === "DELIVERED" || order.status === "COMPLETED" ? "success" :
                             order.status === "CANCELLED" ? "danger" :
-                            order.status === "PENDING" ? "warning text-dark" : "info text-dark"
+                            order.status === "PENDING" ? "warning text-dark" :
+                            order.status === "READY_FOR_PICKUP" ? "primary" : "info text-dark"
                           }`}>
                             {order.status}
                           </span>
@@ -331,8 +347,8 @@ function AdminDashboard() {
                           >
                             <option value="PENDING">PENDING</option>
                             <option value="PREPARING">PREPARING</option>
-                            <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY</option>
-                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="READY_FOR_PICKUP">READY FOR PICKUP</option>
+                            <option value="DELIVERED">COMPLETED / PICKED UP</option>
                             <option value="CANCELLED">CANCELLED</option>
                           </select>
                         </td>
@@ -484,15 +500,35 @@ function AdminDashboard() {
                     onChange={(e) => setProductForm({ ...productForm, tag: e.target.value })}
                   />
                 </div>
-                <div className="mb-2">
-                  <label className="form-label small fw-bold">Image URL</label>
+                <div className="mb-3">
+                  <label className="form-label small fw-bold">Upload Cake Image (Local File)</label>
                   <input
-                    type="url"
+                    type="file"
+                    accept="image/*"
+                    className="form-control mb-2"
+                    onChange={handleLocalImageUpload}
+                  />
+                  
+                  <div className="small text-muted mb-2">Or enter Image Web URL:</div>
+                  <input
+                    type="text"
                     className="form-control"
-                    placeholder="https://..."
+                    placeholder="https://... or base64"
                     value={productForm.imageUrl}
                     onChange={(e) => setProductForm({ ...productForm, imageUrl: e.target.value })}
                   />
+
+                  {productForm.imageUrl && (
+                    <div className="text-center p-2 border rounded bg-light mt-2">
+                      <small className="text-muted d-block mb-1">Image Preview:</small>
+                      <img
+                        src={productForm.imageUrl}
+                        alt="Preview"
+                        style={{ maxHeight: "120px", objectFit: "cover" }}
+                        className="rounded shadow-sm"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="mb-3">
                   <label className="form-label small fw-bold">Description</label>

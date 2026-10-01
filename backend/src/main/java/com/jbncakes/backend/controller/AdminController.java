@@ -31,6 +31,7 @@ public class AdminController {
         long totalOrders = orderRepository.count();
         long activeOrders = orderRepository.countByStatus("PENDING") + 
                              orderRepository.countByStatus("PREPARING") + 
+                             orderRepository.countByStatus("READY_FOR_PICKUP") +
                              orderRepository.countByStatus("OUT_FOR_DELIVERY");
         long totalCustomers = userRepository.countByRole("CUSTOMER");
 

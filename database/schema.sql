@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10, 2) NOT NULL,
     category VARCHAR(50) NOT NULL, -- e.g., 'cake', 'brownie'
     tag VARCHAR(50), -- e.g., 'Popular', 'Bestseller', 'Trending'
-    image_url TEXT,
+    image_url LONGTEXT,
     available BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

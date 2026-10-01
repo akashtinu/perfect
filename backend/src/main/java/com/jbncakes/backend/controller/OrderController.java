@@ -88,12 +88,12 @@ public class OrderController {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<String> activeStatuses = Arrays.asList("PENDING", "PREPARING", "OUT_FOR_DELIVERY");
+        List<String> activeStatuses = Arrays.asList("PENDING", "PREPARING", "READY_FOR_PICKUP", "OUT_FOR_DELIVERY");
         List<Order> activeOrders = orderRepository.findByUserAndStatusInOrderByCreatedAtDesc(user, activeStatuses);
         return ResponseEntity.ok(activeOrders);
     }
 
-    // Customer: Get order history (Delivered / Cancelled)
+    // Customer: Get order history (Delivered / Picked Up / Cancelled)
     @GetMapping("/my-history")
     public ResponseEntity<?> getMyOrderHistory(Authentication authentication) {
         if (authentication == null) {
@@ -102,7 +102,7 @@ public class OrderController {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<String> historyStatuses = Arrays.asList("DELIVERED", "CANCELLED");
+        List<String> historyStatuses = Arrays.asList("DELIVERED", "COMPLETED", "PICKED_UP", "CANCELLED");
         List<Order> historyOrders = orderRepository.findByUserAndStatusInOrderByCreatedAtDesc(user, historyStatuses);
         return ResponseEntity.ok(historyOrders);
     }
@@ -154,7 +154,7 @@ public class OrderController {
             if ("CANCELLED".equalsIgnoreCase(statusReq.getStatus()) && "PENDING".equalsIgnoreCase(order.getStatus())) {
                 order.setStatus("CANCELLED");
             } else {
-                return ResponseEntity.badRequest().body(Map.of("message", "Customers can only cancel pending orders!"));
+                return ResponseEntity.badRequest().body(Map.of("message", "Orders cannot be cancelled once baking or preparation has started!"));
             }
         } else {
             // Admin can update to any valid status

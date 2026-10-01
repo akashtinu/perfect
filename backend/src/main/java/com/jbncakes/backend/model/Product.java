@@ -27,7 +27,7 @@ public class Product {
     @Column(length = 50)
     private String tag; // "Popular", "Bestseller", "Trending"
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String imageUrl;
 
     private Boolean available = true;
