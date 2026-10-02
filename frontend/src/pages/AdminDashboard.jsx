@@ -364,6 +364,7 @@ function AdminDashboard() {
                     <th>Customer</th>
                     <th>Contact / Location</th>
                     <th>Items</th>
+                    <th>Order Notes</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th>Update Status</th>
@@ -372,7 +373,7 @@ function AdminDashboard() {
                 <tbody>
                   {filteredOrders.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="text-center py-4 text-muted">
+                      <td colSpan="8" className="text-center py-4 text-muted">
                         No orders found for the selected filter.
                       </td>
                     </tr>
@@ -390,6 +391,15 @@ function AdminDashboard() {
                         </td>
                         <td>
                           {order.items?.map((i) => `${i.product?.name} (x${i.quantity})`).join(", ")}
+                        </td>
+                        <td>
+                          {order.notes ? (
+                            <span className="badge bg-warning text-dark text-wrap text-start style-note" style={{ maxWidth: 180 }}>
+                              📝 {order.notes}
+                            </span>
+                          ) : (
+                            <span className="text-muted small">None</span>
+                          )}
                         </td>
                         <td className="fw-bold text-pink">₹{order.totalAmount}</td>
                         <td>

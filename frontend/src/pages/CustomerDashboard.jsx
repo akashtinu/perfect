@@ -205,8 +205,9 @@ function CustomerDashboard() {
           📦 Order Progress
         </div>
 
-        {/* Stepper Row */}
-        <div style={{ display: "flex", alignItems: "flex-start", position: "relative" }}>
+        {/* Stepper Row Container */}
+        <div style={{ overflowX: "auto", paddingBottom: 6 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", position: "relative", minWidth: 320 }}>
           {steps.map((step, i) => {
             const stepIdx = ORDER.indexOf(step.key);
             const isDone    = stepIdx < currentIdx;
@@ -333,6 +334,7 @@ function CustomerDashboard() {
               </React.Fragment>
             );
           })}
+          </div>
         </div>
 
         {/* CSS Keyframes injected inline */}
@@ -460,6 +462,15 @@ function CustomerDashboard() {
                             <span className="fs-5 fw-bold text-pink">₹{order.totalAmount}</span>
                           </div>
                         </div>
+
+                        {order.notes && (
+                          <div className="mt-2 p-2 rounded bg-light border">
+                            <small className="fw-bold text-muted d-block" style={{ fontSize: "0.75rem" }}>
+                              📝 Special Order Notes:
+                            </small>
+                            <span className="small text-dark fw-semibold">{order.notes}</span>
+                          </div>
+                        )}
 
                         <div className="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                           <button
