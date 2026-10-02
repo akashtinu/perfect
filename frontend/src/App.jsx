@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
-import { DarkModeProvider } from "./context/DarkModeContext";
 import { ToastProvider } from "./components/Toast";
 
 import Navbar from "./Navbar";
@@ -43,50 +42,48 @@ function MainLandingPage() {
 
 function App() {
   return (
-    <DarkModeProvider>
-      <AuthProvider>
-        <CartProvider>
-          <ToastProvider>
-            <BrowserRouter>
-              <div className="app-container d-flex flex-column min-vh-100">
-                <Navbar />
-                <main className="flex-grow-1">
-                  <Routes>
-                    <Route path="/" element={<MainLandingPage />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    
-                    <Route
-                      path="/customer/dashboard"
-                      element={
-                        <CustomerRoute>
-                          <CustomerDashboard />
-                        </CustomerRoute>
-                      }
-                    />
-                    
-                    <Route
-                      path="/admin/dashboard"
-                      element={
-                        <AdminRoute>
-                          <AdminDashboard />
-                        </AdminRoute>
-                      }
-                    />
+    <AuthProvider>
+      <CartProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <div className="app-container d-flex flex-column min-vh-100">
+              <Navbar />
+              <main className="flex-grow-1">
+                <Routes>
+                  <Route path="/" element={<MainLandingPage />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  
+                  <Route
+                    path="/customer/dashboard"
+                    element={
+                      <CustomerRoute>
+                        <CustomerDashboard />
+                      </CustomerRoute>
+                    }
+                  />
+                  
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <AdminRoute>
+                        <AdminDashboard />
+                      </AdminRoute>
+                    }
+                  />
 
-                    {/* Catch-all fallback */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </div>
-            </BrowserRouter>
-          </ToastProvider>
-        </CartProvider>
-      </AuthProvider>
-    </DarkModeProvider>
+                  {/* Catch-all fallback */}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </BrowserRouter>
+        </ToastProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

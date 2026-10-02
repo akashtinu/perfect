@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faXmark, faShoppingBag, faUser, faShieldHalved, faSignOutAlt, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faXmark, faShoppingBag, faUser, faShieldHalved, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { useCart } from "./context/CartContext";
-import { useDarkMode } from "./context/DarkModeContext";
 import logo from "./assets/jbn.png";
 import "./Navbar.css";
 
@@ -14,7 +13,6 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { user, logout, isAdmin } = useAuth();
   const { cartCount } = useCart();
-  const { dark, toggle: toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,26 +59,6 @@ function Navbar() {
                 <Link to="/products" className="nav-link" onClick={() => setOpen(false)}>
                   Cakes & Pastries
                 </Link>
-              </li>
-
-              {/* Dark Mode Toggle */}
-              <li className="nav-item me-lg-2 my-2 my-lg-0">
-                <button
-                  className="btn btn-sm text-white border-0"
-                  onClick={toggleDarkMode}
-                  title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                  style={{
-                    background: "rgba(255,255,255,0.2)",
-                    borderRadius: "50%",
-                    width: 36,
-                    height: 36,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <FontAwesomeIcon icon={dark ? faSun : faMoon} style={{ color: dark ? "#fde047" : "#fff" }} />
-                </button>
               </li>
 
               {/* Cart Button with Counter */}
