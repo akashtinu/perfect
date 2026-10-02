@@ -50,24 +50,12 @@ function Signup() {
         <div className="auth-header text-center">
           <span className="auth-badge">Join JBN Cakes</span>
           <h2>Create New Account</h2>
-          <p>Register as a Customer to order cakes or Admin to manage shop</p>
+          <p>Register as a Customer to order fresh cakes & pastries</p>
         </div>
 
         {error && <div className="alert alert-danger py-2 px-3 small">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group mb-3">
-            <label className="form-label">Account Role</label>
-            <select
-              name="role"
-              className="form-select"
-              value={formData.role}
-              onChange={handleChange}
-            >
-              <option value="CUSTOMER">Customer (Order Cakes & Pastries)</option>
-              <option value="ADMIN">Admin (Manage Shop & Orders)</option>
-            </select>
-          </div>
 
           <div className="form-group mb-3">
             <label className="form-label">Full Name</label>

@@ -59,7 +59,7 @@ function Login() {
           <button
             type="button"
             className={`role-toggle-btn ${activeRole === "CUSTOMER" ? "active" : ""}`}
-            onClick={() => fillDemo("CUSTOMER")}
+            onClick={() => setActiveRole("CUSTOMER")}
           >
             <FontAwesomeIcon icon={faUser} className="me-2" />
             Customer Login
@@ -67,7 +67,7 @@ function Login() {
           <button
             type="button"
             className={`role-toggle-btn ${activeRole === "ADMIN" ? "active" : ""}`}
-            onClick={() => fillDemo("ADMIN")}
+            onClick={() => setActiveRole("ADMIN")}
           >
             <FontAwesomeIcon icon={faShieldHalved} className="me-2" />
             Admin Portal
@@ -116,18 +116,6 @@ function Login() {
             )}
           </button>
         </form>
-
-        <div className="demo-hint text-center mt-3 p-2 rounded">
-          <small className="text-muted d-block mb-1">💡 Quick Demo Credentials:</small>
-          <div className="d-flex justify-content-center gap-2">
-            <button className="btn btn-sm btn-outline-secondary" onClick={() => fillDemo("CUSTOMER")}>
-              Fill Customer Demo
-            </button>
-            <button className="btn btn-sm btn-outline-danger" onClick={() => fillDemo("ADMIN")}>
-              Fill Admin Demo
-            </button>
-          </div>
-        </div>
 
         <div className="auth-footer text-center mt-4">
           <p className="mb-0 text-muted">
