@@ -15,6 +15,8 @@ import {
   faArrowRight,
   faBan,
   faBirthdayCake,
+  faPrint,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Dashboard.css";
 
@@ -58,6 +60,77 @@ function CustomerDashboard() {
     } catch (err) {
       alert(err.message || "Failed to cancel order");
     }
+  };
+
+  const handlePrintReceipt = (order) => {
+    const printWin = window.open("", "_blank", "width=700,height=800");
+    if (!printWin) return;
+    const itemsHtml = order.items?.map(i => `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">${i.product?.name || "Cake Item"}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">x${i.quantity}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">₹${i.pricePerUnit || i.price || 0}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">₹${(i.pricePerUnit || i.price || 0) * i.quantity}</td>
+      </tr>
+    `).join("") || "";
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Order Receipt #${order.id} - JBN Cakes</title>
+        <style>
+          body { font-family: 'Segoe UI', Arial, sans-serif; margin: 30px; color: #333; }
+          .header { text-align: center; border-bottom: 2px solid #e6005c; padding-bottom: 15px; margin-bottom: 20px; }
+          .title { color: #e6005c; margin: 0; font-size: 28px; }
+          .subtitle { color: #666; margin: 5px 0 0; font-size: 14px; }
+          .details { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          th { background: #f8fafc; padding: 10px; text-align: left; border-bottom: 2px solid #ddd; }
+          .total { font-size: 18px; font-weight: bold; text-align: right; color: #e6005c; }
+          .footer { text-align: center; margin-top: 40px; color: #888; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1 class="title">🎂 JBN Cakes Bakery</h1>
+          <p class="subtitle">Official Order Receipt / Pickup Docket</p>
+        </div>
+        <div class="details">
+          <div>
+            <strong>Order ID:</strong> #${order.id}<br/>
+            <strong>Customer:</strong> ${order.user?.name || user?.name || "Customer"}<br/>
+            <strong>Phone:</strong> ${order.customerPhone || "N/A"}
+          </div>
+          <div style="text-align: right;">
+            <strong>Date:</strong> ${new Date(order.createdAt || Date.now()).toLocaleString()}<br/>
+            <strong>Fulfillment:</strong> ${order.deliveryAddress || "Store Pickup"}<br/>
+            <strong>Status:</strong> ${order.status}
+          </div>
+        </div>
+        ${order.notes ? `<p style="background: #fff8eb; padding: 10px; border-radius: 6px; border-left: 4px solid #f59e0b;"><strong>Note:</strong> ${order.notes}</p>` : ""}
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th style="text-align: center;">Qty</th>
+              <th style="text-align: right;">Price</th>
+              <th style="text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+        <div class="total">Total Amount Paid: ₹${order.totalAmount}</div>
+        <div class="footer">
+          <p>Thank you for ordering with JBN Cakes! Visit us for fresh baked delights.</p>
+        </div>
+        <script>window.onload = function() { window.print(); }</script>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
   };
 
   const getStatusBadge = (status) => {
@@ -388,22 +461,27 @@ function CustomerDashboard() {
                           </div>
                         </div>
 
-                        {order.status === "PENDING" ? (
-                          <div className="mt-3 text-end">
+                        <div className="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                          <button
+                            className="btn btn-outline-secondary btn-sm"
+                            onClick={() => handlePrintReceipt(order)}
+                          >
+                            <FontAwesomeIcon icon={faPrint} className="me-1" /> Print Receipt
+                          </button>
+
+                          {order.status === "PENDING" ? (
                             <button
                               className="btn btn-outline-danger btn-sm"
                               onClick={() => handleCancelOrder(order.id)}
                             >
                               <FontAwesomeIcon icon={faBan} className="me-1" /> Cancel Order
                             </button>
-                          </div>
-                        ) : (
-                          <div className="mt-3 text-end">
+                          ) : (
                             <small className="text-muted fst-italic">
-                              🔒 Order is in <strong>{order.status.replace(/_/g, " ")}</strong> state and cannot be cancelled.
+                              🔒 Status: <strong>{order.status.replace(/_/g, " ")}</strong> (Non-cancellable)
                             </small>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -429,6 +507,7 @@ function CustomerDashboard() {
                       <th>Items</th>
                       <th>Total</th>
                       <th>Status</th>
+                      <th>Receipt</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -441,6 +520,14 @@ function CustomerDashboard() {
                         </td>
                         <td className="fw-bold">₹{order.totalAmount}</td>
                         <td>{getStatusBadge(order.status)}</td>
+                        <td>
+                          <button
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() => handlePrintReceipt(order)}
+                          >
+                            <FontAwesomeIcon icon={faPrint} className="me-1" /> Print
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

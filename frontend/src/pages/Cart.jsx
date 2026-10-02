@@ -3,14 +3,16 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBag, faTrash, faMinus, faPlus, faArrowRight, faMapMarkerAlt, faPhone, faStore } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingBag, faTrash, faMinus, faPlus, faArrowRight, faMapMarkerAlt, faPhone, faStore, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import { getProductImage } from "../utils/imageMapper";
+import { useToast } from "../components/Toast";
 import "./Cart.css";
 
 function Cart() {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, placeOrder, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [address, setAddress] = useState(user?.address || "Store Pickup");
   const [phone, setPhone] = useState(user?.phone || "");
@@ -21,7 +23,7 @@ function Cart() {
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (!user) {
-      alert("Please login to place an order!");
+      toast("Please login to place an order!", "warning");
       navigate("/login");
       return;
     }
@@ -35,7 +37,7 @@ function Cart() {
     setError("");
     try {
       await placeOrder(address || "Store Pickup", phone, notes);
-      alert("🎉 Order placed successfully! Your order will be prepared for Store Pickup.");
+      toast("🎉 Order placed! Your cake will be ready for Store Pickup soon.", "success", 5000);
       navigate("/customer/dashboard");
     } catch (err) {
       setError(err.message || "Failed to place order.");

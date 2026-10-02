@@ -241,6 +241,69 @@ function AdminDashboard() {
           </div>
         </div>
 
+        {/* Visual Analytics Chart Section */}
+        <div className="bg-white rounded shadow-sm p-4 mb-4">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h6 className="fw-bold mb-0">📊 Order Status Breakdown & Sales Insights</h6>
+            <small className="text-muted">Real-time stats from TiDB Database</small>
+          </div>
+          
+          <div className="row g-3">
+            {(() => {
+              const statusCounts = {
+                PENDING: 0,
+                PREPARING: 0,
+                READY_FOR_PICKUP: 0,
+                DELIVERED: 0,
+                CANCELLED: 0,
+              };
+              orders.forEach((o) => {
+                const s = o.status || "PENDING";
+                if (statusCounts[s] !== undefined) statusCounts[s]++;
+                else if (["COMPLETED", "PICKED_UP"].includes(s)) statusCounts.DELIVERED++;
+              });
+
+              const maxCount = Math.max(...Object.values(statusCounts), 1);
+              const STATUS_CONFIG = {
+                PENDING:          { label: "Pending",           color: "#ffc107" },
+                PREPARING:        { label: "Preparing",         color: "#0dcaf0" },
+                READY_FOR_PICKUP: { label: "Ready for Pickup",  color: "#0d6efd" },
+                DELIVERED:        { label: "Completed/Delivered", color: "#198754" },
+                CANCELLED:        { label: "Cancelled",         color: "#dc3545" },
+              };
+
+              return Object.entries(STATUS_CONFIG).map(([key, cfg]) => {
+                const count = statusCounts[key] || 0;
+                const pct = Math.round((count / maxCount) * 100);
+                return (
+                  <div key={key} className="col-md-4 col-sm-6">
+                    <div style={{
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 14,
+                      padding: 14,
+                      background: "#f8fafc",
+                    }}>
+                      <div className="d-flex justify-content-between mb-1" style={{ fontSize: "0.82rem", fontWeight: 700 }}>
+                        <span>{cfg.label}</span>
+                        <span style={{ color: cfg.color }}>{count} orders</span>
+                      </div>
+                      <div style={{ height: 10, background: "#e2e8f0", borderRadius: 6, overflow: "hidden" }}>
+                        <div style={{
+                          height: "100%",
+                          width: `${pct}%`,
+                          background: cfg.color,
+                          borderRadius: 6,
+                          transition: "width 0.6s ease",
+                        }} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+          </div>
+        </div>
+
         {/* Admin Navigation Tabs */}
         <div className="dashboard-tabs mb-4">
           <button
@@ -486,105 +549,165 @@ function AdminDashboard() {
         {/* Add/Edit Product Modal */}
         {showProductModal && (
           <div className="modal-backdrop-custom d-flex align-items-center justify-content-center">
-            <div className="modal-card p-4 bg-white rounded shadow-lg max-w-500 w-100">
-              <h5 className="fw-bold mb-3">{editingProduct ? "Edit Cake Product" : "Add New Cake Product"}</h5>
-              <form onSubmit={handleSaveProduct}>
-                <div className="mb-2">
-                  <label className="form-label small fw-bold">Cake Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={productForm.name}
-                    onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="row g-2 mb-2">
-                  <div className="col-6">
-                    <label className="form-label small fw-bold">Price (₹)</label>
+            <div
+              className="modal-card bg-white rounded shadow-lg max-w-500 w-100"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                maxHeight: "90vh",
+                overflow: "hidden",
+              }}
+            >
+              {/* ── Sticky Header ── */}
+              <div style={{
+                padding: "20px 24px 14px",
+                borderBottom: "1px solid #e2e8f0",
+                flexShrink: 0,
+              }}>
+                <h5 className="fw-bold mb-0">
+                  {editingProduct ? "✏️ Edit Cake Product" : "➕ Add New Cake Product"}
+                </h5>
+              </div>
+
+              {/* ── Scrollable Form Body ── */}
+              <div style={{ overflowY: "auto", flex: 1, padding: "20px 24px" }}>
+                <form id="product-form" onSubmit={handleSaveProduct}>
+                  <div className="mb-2">
+                    <label className="form-label small fw-bold">Cake Name</label>
                     <input
-                      type="number"
-                      step="0.01"
+                      type="text"
                       className="form-control"
-                      value={productForm.price}
-                      onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                      value={productForm.name}
+                      onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                       required
                     />
                   </div>
-                  <div className="col-6">
-                    <label className="form-label small fw-bold">Category</label>
-                    <select
-                      className="form-select"
-                      value={productForm.category}
-                      onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                    >
-                      <option value="cake">cake</option>
-                      <option value="brownie">brownie</option>
-                      <option value="pastry">pastry</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <label className="form-label small fw-bold">Badge Tag (e.g. Popular, Bestseller)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={productForm.tag}
-                    onChange={(e) => setProductForm({ ...productForm, tag: e.target.value })}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label small fw-bold">Upload Cake Image (Local File)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control mb-2"
-                    onChange={handleLocalImageUpload}
-                  />
-                  
-                  <div className="small text-muted mb-2">Or enter Image Web URL:</div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="https://... or base64"
-                    value={productForm.imageUrl}
-                    onChange={(e) => setProductForm({ ...productForm, imageUrl: e.target.value })}
-                  />
-
-                  {productForm.imageUrl && (
-                    <div className="text-center p-2 border rounded bg-light mt-2">
-                      <small className="text-muted d-block mb-1">Image Preview:</small>
-                      <img
-                        src={productForm.imageUrl}
-                        alt="Preview"
-                        style={{ maxHeight: "120px", objectFit: "cover" }}
-                        className="rounded shadow-sm"
+                  <div className="row g-2 mb-2">
+                    <div className="col-6">
+                      <label className="form-label small fw-bold">Price (₹)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        className="form-control"
+                        value={productForm.price}
+                        onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                        required
                       />
                     </div>
-                  )}
-                </div>
-                <div className="mb-3">
-                  <label className="form-label small fw-bold">Description</label>
-                  <textarea
-                    className="form-control"
-                    rows="2"
-                    value={productForm.description}
-                    onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                  ></textarea>
-                </div>
-                <div className="d-flex justify-content-end gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setShowProductModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-pink-primary">
-                    Save Product
-                  </button>
-                </div>
-              </form>
+                    <div className="col-6">
+                      <label className="form-label small fw-bold">Category</label>
+                      <select
+                        className="form-select"
+                        value={productForm.category}
+                        onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
+                      >
+                        <option value="cake">cake</option>
+                        <option value="brownie">brownie</option>
+                        <option value="pastry">pastry</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="mb-2">
+                    <label className="form-label small fw-bold">Badge Tag (e.g. Popular, Bestseller)</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={productForm.tag}
+                      onChange={(e) => setProductForm({ ...productForm, tag: e.target.value })}
+                    />
+                  </div>
+
+                  {/* Image Upload */}
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold">Upload Cake Image (Local File)</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-control mb-2"
+                      onChange={handleLocalImageUpload}
+                    />
+                    <div className="small text-muted mb-2">Or enter Image Web URL:</div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="https://... or base64"
+                      value={productForm.imageUrl}
+                      onChange={(e) => setProductForm({ ...productForm, imageUrl: e.target.value })}
+                    />
+
+                    {productForm.imageUrl && (
+                      <div style={{
+                        marginTop: 10,
+                        border: "1px solid #e2e8f0",
+                        borderRadius: 12,
+                        background: "#f8fafc",
+                        padding: 10,
+                        textAlign: "center",
+                      }}>
+                        <small className="text-muted d-block mb-2" style={{ fontWeight: 600 }}>
+                          🖼️ Image Preview
+                        </small>
+                        <img
+                          src={productForm.imageUrl}
+                          alt="Preview"
+                          style={{
+                            maxHeight: "150px",
+                            maxWidth: "100%",
+                            objectFit: "contain",
+                            borderRadius: 8,
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                          }}
+                        />
+                        <div className="mt-2">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => setProductForm({ ...productForm, imageUrl: "" })}
+                          >
+                            ✕ Remove Image
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="form-label small fw-bold">Description</label>
+                    <textarea
+                      className="form-control"
+                      rows="2"
+                      value={productForm.description}
+                      onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                    ></textarea>
+                  </div>
+                </form>
+              </div>
+
+              {/* ── Sticky Footer Buttons — always visible ── */}
+              <div style={{
+                padding: "14px 24px",
+                borderTop: "1px solid #e2e8f0",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 10,
+                flexShrink: 0,
+                background: "#fff",
+              }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowProductModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  form="product-form"
+                  className="btn btn-pink-primary"
+                >
+                  Save Product
+                </button>
+              </div>
             </div>
           </div>
         )}

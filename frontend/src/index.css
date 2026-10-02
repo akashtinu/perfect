@@ -25,3 +25,62 @@ body {
   font-size: 18px;
   letter-spacing: 1px;
 }
+
+/* ── DARK MODE GLOBAL OVERRIDES ── */
+[data-theme="dark"] body {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .dashboard-page,
+[data-theme="dark"] .cart-page,
+[data-theme="dark"] .products,
+[data-theme="dark"] .auth-page {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .order-card,
+[data-theme="dark"] .cake-card,
+[data-theme="dark"] .product-admin-card,
+[data-theme="dark"] .modal-card {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .table {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table-light th {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+}
+
+[data-theme="dark"] .text-muted {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .filter-btn {
+  background-color: #1e293b;
+  color: #94a3b8;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .tab-btn {
+  background-color: #1e293b;
+  color: #94a3b8;
+  border-color: #334155;
+}
+

@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { DarkModeProvider } from "./context/DarkModeContext";
+import { ToastProvider } from "./components/Toast";
 
 import Navbar from "./Navbar";
 import Home from "./home";
@@ -17,7 +19,7 @@ import Cart from "./pages/Cart";
 
 // Protected Route wrappers
 function CustomerRoute({ children }) {
-  const { user, isCustomer, isAdmin } = useAuth();
+  const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
@@ -41,46 +43,50 @@ function MainLandingPage() {
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <div className="app-container d-flex flex-column min-vh-100">
-            <Navbar />
-            <main className="flex-grow-1">
-              <Routes>
-                <Route path="/" element={<MainLandingPage />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                
-                <Route
-                  path="/customer/dashboard"
-                  element={
-                    <CustomerRoute>
-                      <CustomerDashboard />
-                    </CustomerRoute>
-                  }
-                />
-                
-                <Route
-                  path="/admin/dashboard"
-                  element={
-                    <AdminRoute>
-                      <AdminDashboard />
-                    </AdminRoute>
-                  }
-                />
+    <DarkModeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <ToastProvider>
+            <BrowserRouter>
+              <div className="app-container d-flex flex-column min-vh-100">
+                <Navbar />
+                <main className="flex-grow-1">
+                  <Routes>
+                    <Route path="/" element={<MainLandingPage />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    
+                    <Route
+                      path="/customer/dashboard"
+                      element={
+                        <CustomerRoute>
+                          <CustomerDashboard />
+                        </CustomerRoute>
+                      }
+                    />
+                    
+                    <Route
+                      path="/admin/dashboard"
+                      element={
+                        <AdminRoute>
+                          <AdminDashboard />
+                        </AdminRoute>
+                      }
+                    />
 
-                {/* Catch-all fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+                    {/* Catch-all fallback */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            </BrowserRouter>
+          </ToastProvider>
+        </CartProvider>
+      </AuthProvider>
+    </DarkModeProvider>
   );
 }
 
